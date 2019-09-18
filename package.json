@@ -1,0 +1,16 @@
+{
+  "name": "project_8",
+  "version": "1.0.0",
+  "description": "8th techdegree project",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "sequelize": "^5.10.1",
+    "sqlite3": "^4.0.9"
+  }
+}
