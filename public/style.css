@@ -95,3 +95,20 @@ input[type=text] {
 .error {
   color: rgb(236, 15, 15);
 }
+
+#writer {
+  display: none;
+}
+
+#name {
+  display: none;
+}
+
+#oops {
+  display: none;
+}
+
+#all {
+  display: none;
+}
+

@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'pug');
 
 
-app.get('/', function (req, res) {
+app.get(['/','/books'], function (req, res) {
   Library.findAll().then(
     x => res.render('index', {
       books: x.map(i => {
@@ -32,9 +32,9 @@ app.get('/', function (req, res) {
 
 
 
-app.get('/books', function (req, res) {
-  res.render('index');
-});
+// app.get('/books', function (req, res) {
+//   res.render('index');
+// });
 
 app.post('/books/new', function (req, res) {
   
@@ -45,12 +45,13 @@ app.post('/books/new', function (req, res) {
     year: req.body.year,
   })
  
+  
   res.redirect('/');
 });
 
 app.get('/books/new', function (req, res) {
   
-  res.render('new-book');
+  res.render('new-book', {console: console.log('howdy')});
 });
 
 app.get('/books/:id', function (req, res) {
@@ -76,6 +77,20 @@ app.post('/books/:id/delete', function (req, res) {
   res.redirect('/');
 });
 
+// app.get('*', function(req, res){
+//   res.send('what???', 404);
+// });
+
+app.use((req, res, next) => {
+  const err = new Error('Page Not Found ');
+  err.status = 404;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  res.locals.error = err;
+  res.render('page-not-found');
+});
 
 app.listen(3000, function () {
   console.log('listening on port 3000!');
