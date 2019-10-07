@@ -3,8 +3,17 @@ const path = require('path');
 const { Library } = db.models;
 const { Op } = db.Sequelize;
 var express = require('express');
+const validation = ({ title, author }) => {
+  return {
+    title: !title || title.trim() === 0 ? 'Title is required' : false,
+    author: !author || author.trim() === 0 ? 'Author is required' : false
+  };
+}
 const bodyParser = require('body-parser');
 var app = express();
+
+let errors = [];
+
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }))
@@ -12,8 +21,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.set('view engine', 'pug');
 
-
-app.get(['/','/books'], function (req, res) {
+app.get(['/', '/books'], function (req, res) {
   Library.findAll().then(
     x => res.render('index', {
       books: x.map(i => {
@@ -24,10 +32,10 @@ app.get(['/','/books'], function (req, res) {
           genre: i.genre,
           year: i.year
         }
-      })
+      }),
+      errors: errors
     })
   )
-  
 });
 
 
@@ -36,34 +44,62 @@ app.get(['/','/books'], function (req, res) {
 //   res.render('index');
 // });
 
-app.post('/books/new', function (req, res) {
+app.post('/books/new', function (req, res, next) {
+  let transaction;
   
-  Library.create({
-    title: req.body.title,
-    author: req.body.author,
-    genre: req.body.genre,
-    year: req.body.year,
+  try {
+    errors = [];
+    let errorList = []
+    for (let i in req.body) {
+      if (!req.body[i]) {
+        errorList.push(`${[i]} is a required field`)
+        throw new Error(errorList);
+      } else {
+        break;
+      }
+    }
+    
+    Library.create({
+      title: req.body.title,
+      author: req.body.author,
+      genre: req.body.genre,
+      year: req.body.year,
+    })
+    res.redirect('/');
+  }
+    // if (!req.body) { throw new Error(`${req.params[0]} required`)  } else {
+
+    // }
+
+  // transaction.commit();
+ catch (err) {
+  errors.push(err.message);
+  console.log('errors', errors);
+  res.render('new-book', {
+    errors: errors
   })
- 
-  
-  res.redirect('/');
+}
 });
 
 app.get('/books/new', function (req, res) {
-  
-  res.render('new-book', {console: console.log('howdy')});
+
+  res.render('new-book', );
 });
 
 app.get('/books/:id', function (req, res) {
   Library.findByPk(req.params.id).then(
-    x=> {
-  res.render('update-book', {book: { 
-    id: x.id,
-    title: x.title,
-    author: x.author,
-    genre: x.genre,
-    year: x.year,}});
-})});
+    x => {
+      res.render('update-book', {
+        book: {
+          id: x.id,
+          title: x.title,
+          author: x.author,
+          genre: x.genre,
+          year: x.year,
+        }
+      });
+    })
+});
 
 app.post('/books/:id', function (req, res) {
   res.render('update-book');
@@ -71,8 +107,8 @@ app.post('/books/:id', function (req, res) {
 
 app.post('/books/:id/delete', function (req, res) {
   Library.findByPk(req.params.id).then(
-    x => x.destroy({force: true})
-    
+    x => x.destroy({ force: true })
+
   )
   res.redirect('/');
 });

@@ -4,14 +4,15 @@ head
   title New Book
   link(rel='stylesheet' href='/style.css', type='text/css' )
 h1 New Book
-form(actio='/add' method='post')
-  h2#oops.error Oooops!
-  ul#all.error
-    li#writer Author is required
-    li#name Name is required
+form(actio='books/new' method='post')
+  if errors
+    h2(class="error") Oooops!
+    ul(class="error")
+      each error in errors
+        li= error
   p
     label(for='title') Title
-    input#title(name='title' type='text' required)
+    input#title(name='title' type='text')
   p
     label(for='author') Author
     input#author(name='author' type='text')
@@ -22,6 +23,6 @@ form(actio='/add' method='post')
     label(for='year') Year
     input#year(name='year' type='text')
   p
-    input.button(type='submit' value='Create New Book' onclick=console) 
+    input.button(type='submit' value='Create New Book') 
   p
-    a.button(href='/' onclick=console) Cancel
+    a.button(href='/' ) Cancel

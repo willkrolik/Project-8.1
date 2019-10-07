@@ -97,18 +97,18 @@ input[type=text] {
 }
 
 #writer {
-  display: none;
+  display: visible;
 }
 
 #name {
-  display: none;
+  display: visible;
 }
 
 #oops {
-  display: none;
+  display: visible;
 }
 
 #all {
-  display: none;
+  display: visible;
 }
 
