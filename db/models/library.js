@@ -51,9 +51,14 @@ module.exports = (sequelize) => {
         notNull: {
           msg: 'Please provide a value for "year"',
         },
+        notEmpty: {
+          msg: 'Please provide a value for "year"',
+        },
+        isInt: {
+          msg: 'Please provide a valid number for year',
+        },
         min: { 
-            args: 1,
-            msg: 'Please provide a value greater than "0" for "runtime"',
+            msg: 'Please provide a value greater than "0" for "year"',
         },
       },
     }

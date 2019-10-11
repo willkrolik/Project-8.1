@@ -44,41 +44,25 @@ app.get(['/', '/books'], function (req, res) {
 //   res.render('index');
 // });
 
-app.post('/books/new', function (req, res, next) {
-  let transaction;
-  
-  try {
-    errors = [];
-    let errorList = []
-    for (let i in req.body) {
-      if (!req.body[i]) {
-        errorList.push(`${[i]} is a required field`)
-        throw new Error(errorList);
-      } else {
-        break;
-      }
-    }
-    
-    Library.create({
+app.post('/books/new', async (req, res) => {
+  errors = [];
+    try { 
+    let response = await Library.create({
       title: req.body.title,
       author: req.body.author,
       genre: req.body.genre,
       year: req.body.year,
-    })
+    });
+    console.log(response);
+    // response.statusCode === 200 && 
     res.redirect('/');
   }
-    // if (!req.body) { throw new Error(`${req.params[0]} required`)  } else {
-
-    // }
-
-  // transaction.commit();
- catch (err) {
-  errors.push(err.message);
-  console.log('errors', errors);
-  res.render('new-book', {
-    errors: errors
-  })
-}
+  catch (err) {
+    errors.push(err);
+    res.render('new-book', {
+      errors: errors
+    })
+  }
 });
 
 app.get('/books/new', function (req, res) {
