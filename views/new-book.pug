@@ -9,7 +9,7 @@ form(actio='books/new' method='post')
     h2(class="error") Oooops!
     ul(class="error")
       each error in errors
-        li= error
+        li= error.message
   p
     label(for='title') Title
     input#title(name='title' type='text')

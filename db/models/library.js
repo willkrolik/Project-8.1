@@ -58,8 +58,9 @@ module.exports = (sequelize) => {
           msg: 'Please provide a valid number for year',
         },
         min: { 
-            msg: 'Please provide a value greater than "0" for "year"',
-        },
+          args: [0],
+          msg: 'Please provide a value greater than "0" for "year"',
+      },
       },
     }
     }, {  // enable "soft" deletes 

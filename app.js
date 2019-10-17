@@ -60,7 +60,7 @@ app.post('/books/new', async (req, res) => {
   catch (err) {
     errors.push(err);
     res.render('new-book', {
-      errors: errors
+      errors: err.errors
     })
   }
 });
