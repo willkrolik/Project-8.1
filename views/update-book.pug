@@ -3,7 +3,7 @@ head
   title=title
   link(href='../style.css' rel='stylesheet', type='text/css')
 h1 Update Book
-form
+form(actio=`/books/${book.id}` method='post')
   p
     label(for='title') Title
     input#title(name='title' type='text' value=book.title)

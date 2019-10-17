@@ -71,6 +71,7 @@ app.get('/books/new', function (req, res) {
 });
 
 app.get('/books/:id', function (req, res) {
+  console.log("ur doing a GET asswipe");
   Library.findByPk(req.params.id).then(
     x => {
       res.render('update-book', {
@@ -85,8 +86,27 @@ app.get('/books/:id', function (req, res) {
     })
 });
 
-app.post('/books/:id', function (req, res) {
-  res.render('update-book');
+app.post('/books/:id', async (req, res) => {
+  console.log("working?");
+  try {
+    
+    let id = req.params.id;
+    const renderBook = {
+      id,
+      title: req.body.title,
+      author: req.body.author,
+      genre: req.body.genre,
+      year: req.body.year
+    };
+    const bookToUpdate = await Library.findByPk(id);
+    console.log("await 1");
+    const updatedLibrary = await bookToUpdate.update(renderBook);
+    console.log("await 2");
+    res.redirect(`/books/${id}`);
+    console.log("number 3");
+  } catch (error) {
+    console.log("oh crap that's not what you want");
+  }
 });
 
 app.post('/books/:id/delete', function (req, res) {
