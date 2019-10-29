@@ -54,7 +54,7 @@ app.post('/books/new', async (req, res) => {
       year: req.body.year,
     });
     console.log(response);
-    // response.statusCode === 200 && 
+    
     res.redirect('/');
   }
   catch (err) {
@@ -70,8 +70,8 @@ app.get('/books/new', function (req, res) {
   res.render('new-book', );
 });
 
-app.get('/books/:id', function (req, res) {
-  console.log("ur doing a GET asswipe");
+app.get('/books/:id', function (req, res, next) {
+  
   Library.findByPk(req.params.id).then(
     x => {
       res.render('update-book', {
@@ -83,29 +83,40 @@ app.get('/books/:id', function (req, res) {
           year: x.year,
         }
       });
-    })
+    }) 
+    .catch (err => next(err))
 });
 
 app.post('/books/:id', async (req, res) => {
-  console.log("working?");
+  errors = [];
+  //let id = req.params.id;  
+  const bookToUpdate = await Library.findByPk(req.params.id);
   try {
+    console.log("working");
+    // const renderBook = {
+    //   id: req.params.id,
+    //   title: req.body.title,
+    //   author: req.body.author,
+    //   genre: req.body.genre,
+    //   year: req.body.year
+    // };
     
-    let id = req.params.id;
-    const renderBook = {
-      id,
+    console.log(req.params.id);
+    await bookToUpdate.update({
+      id: req.params.id,
       title: req.body.title,
       author: req.body.author,
       genre: req.body.genre,
       year: req.body.year
-    };
-    const bookToUpdate = await Library.findByPk(id);
-    console.log("await 1");
-    const updatedLibrary = await bookToUpdate.update(renderBook);
+    });
     console.log("await 2");
-    res.redirect(`/books/${id}`);
-    console.log("number 3");
-  } catch (error) {
-    console.log("oh crap that's not what you want");
+    res.redirect(`/`);
+    console.log("await 3");
+  } catch (err) {
+    errors.push(err);
+    res.render('update-book', {
+      errors: err.errors
+    })
   }
 });
 
